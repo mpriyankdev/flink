@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>flink-first-project</artifactId>
+    <artifactId>flink-join-example</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -47,14 +47,13 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.p1.WordCount</mainClass>
+                            <mainClass>p1.JoinExample</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
         </plugins>
-
-        <finalName>dataset-example</finalName>
+        <finalName>innerjoin-example</finalName>
     </build>
 
 
