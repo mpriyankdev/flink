@@ -2,6 +2,7 @@ package p1;
 
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.operators.base.JoinOperatorBase;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -40,7 +41,9 @@ public class JoinExample {
         // join datasets on person_id
         // joined format will be <id, person_name, state>
         //similarly leftOuterJoin and rightOuterJoin can be implemented
-        DataSet<Tuple3<Integer, String, String>> joined = personSet.join(locationSet).where(0).equalTo(0)
+        //we can optionally provide hints to the optimizer. Do check for other hints.
+        //they are based on input size , nature of input i.e sorted or un-sorted , partitioned/non-partitioned etc.
+        DataSet<Tuple3<Integer, String, String>> joined = personSet.join(locationSet, JoinOperatorBase.JoinHint.OPTIMIZER_CHOOSES).where(0).equalTo(0)
                 .with(new JoinFunction<Tuple2<Integer, String>, Tuple2<Integer, String>, Tuple3<Integer, String, String>>() {
 
                     public Tuple3<Integer, String, String> join(Tuple2<Integer, String> person, Tuple2<Integer, String> location) {
@@ -96,10 +99,10 @@ public class JoinExample {
 
         //currently writing only inner-join example
         //enabling the feature of overwrite , can be removed by using some other overloaded method
-        joined.writeAsCsv(params.get("output"), "\n", " ",FileSystem.WriteMode.OVERWRITE);
-        leftOuterJoin.writeAsCsv(params.get("output"), "\n", " " , FileSystem.WriteMode.OVERWRITE);
-        rightOuterjoin.writeAsCsv(params.get("output"), "\n", " ",FileSystem.WriteMode.OVERWRITE);
-        fullOuterJoin.writeAsCsv(params.get("output"), "\n", " ",FileSystem.WriteMode.OVERWRITE);
+        joined.writeAsCsv(params.get("output"), "\n", " ", FileSystem.WriteMode.OVERWRITE);
+        leftOuterJoin.writeAsCsv(params.get("output"), "\n", " ", FileSystem.WriteMode.OVERWRITE);
+        rightOuterjoin.writeAsCsv(params.get("output"), "\n", " ", FileSystem.WriteMode.OVERWRITE);
+        fullOuterJoin.writeAsCsv(params.get("output"), "\n", " ", FileSystem.WriteMode.OVERWRITE);
 
 
         env.execute("Join example");
